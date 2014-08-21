@@ -29,5 +29,7 @@ namespace LSPOSWA.Models
         {
             return new ApplicationDbContext();
         }
+
+        //public System.Data.Entity.DbSet<LSPOSWA.Models.RootModel> RootModels { get; set; }
     }
 }

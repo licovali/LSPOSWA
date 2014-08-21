@@ -31,9 +31,9 @@ namespace LSPOSWA
             {
                 RequiredLength = 6,
                 RequireNonLetterOrDigit = false,
-                RequireDigit = true,
+                RequireDigit = false,
                 RequireLowercase = true,
-                RequireUppercase = true,
+                RequireUppercase = false,
             };
             
             var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context.Get<ApplicationDbContext>()));
@@ -51,7 +51,9 @@ namespace LSPOSWA
                 adminUser.UserName = "sysadmin";
                 adminUser.Email = "vlicovali@gmail.com";
                 adminUser.EmailConfirmed = true;
-                var adminResult = manager.Create(adminUser, "SysAdm1n");
+
+                // Adding sysadmin user with "sysadmin" password encrypted
+                var adminResult = manager.Create(adminUser, "48a365b4ce1e322a55ae9017f3daf0c0");
             }
             if (!manager.IsInRole(adminUser.Id, "Administrators"))
             {
