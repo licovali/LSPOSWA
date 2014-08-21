@@ -19,6 +19,7 @@ namespace LSPOSWA
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            ApplicationUser adminUser;
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -29,11 +30,34 @@ namespace LSPOSWA
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
+                RequireNonLetterOrDigit = false,
                 RequireDigit = true,
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
+            
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context.Get<ApplicationDbContext>()));
+            // Validating Administrators Role
+            if (!RoleManager.RoleExists("Administrators"))
+            {
+                var roleresult = RoleManager.Create(new IdentityRole("Administrators"));
+            }
+
+            // Validating if super user exist
+            adminUser = manager.FindByName("sysadmin");
+            if (adminUser == null)
+            {
+                adminUser = new ApplicationUser();
+                adminUser.UserName = "sysadmin";
+                adminUser.Email = "vlicovali@gmail.com";
+                adminUser.EmailConfirmed = true;
+                var adminResult = manager.Create(adminUser, "SysAdm1n");
+            }
+            if (!manager.IsInRole(adminUser.Id, "Administrators"))
+            {
+                var roleResult = manager.AddToRole(adminUser.Id, "Administrators");
+            }
+            
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
