@@ -24,7 +24,7 @@ namespace LSPOSWA
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false
             };
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
@@ -49,6 +49,7 @@ namespace LSPOSWA
             {
                 adminUser = new ApplicationUser();
                 adminUser.UserName = "sysadmin";
+                adminUser.FullName = "Administrador";
                 adminUser.Email = "vlicovali@gmail.com";
                 adminUser.EmailConfirmed = true;
 
